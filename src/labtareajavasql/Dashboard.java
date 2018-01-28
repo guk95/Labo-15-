@@ -80,9 +80,17 @@ public class Dashboard extends JFrame {
             }
 
         });
+        JButton btn_Empleados = new JButton();
+        btn_Empleados.setText("Revisar empleado");
+        btn_Empleados.setBounds(nsPanel.getRectangle(140, 30));
+        btn_Empleados.addActionListener((al) -> {
+            btn_RevisarEmpleado();
+
+        });
 
         Menu.add(btn_usuarios);
         Menu.add(btn_update);
+        Menu.add(btn_Empleados);
         add(Menu);
         pack();
         setVisible(true);
@@ -238,7 +246,7 @@ public class Dashboard extends JFrame {
                         + "`Departamento_Empleado`=?,"
                         + "`Numero_Amonestaciones`=?,"
                         + "`Edad_Empleado`=? WHERE `Codigo de empleado`=?", objs);
-                        
+
                 if (result) {
                     JOptionPane.showMessageDialog(null, "Usuario modificado");
                 } else {
@@ -282,6 +290,156 @@ public class Dashboard extends JFrame {
         tmpFrame.add(txt_amonestaciones);
 
         tmpFrame.setVisible(true);
+    }
+
+    public void btn_RevisarEmpleado() {
+        JLabel lbl_Search = new JLabel();
+        JTextField txt_search = new JTextField();
+        JLabel lbl_Codigonombre = new JLabel();
+        JLabel lbl_Codigo = new JLabel();
+        JLabel lbl_Nombrenombre = new JLabel();
+        JLabel lbl_Nombre = new JLabel();
+        JLabel lbl_Fechanombre = new JLabel();
+        JLabel lbl_Fecha = new JLabel();
+        JLabel lbl_Departamentonombre = new JLabel();
+        JLabel lbl_Departamento = new JLabel();
+        JLabel lbl_Edadnombre = new JLabel();
+        JLabel lbl_Edad = new JLabel();
+        JLabel lbl_Amonestacionesnombre = new JLabel();
+        JLabel lbl_Amonestaciones = new JLabel();
+        JLabel lbl_Despidonombre = new JLabel();
+        JLabel lbl_Despido = new JLabel();
+        JButton btn_revisar = new JButton();
+
+        ultmp = new ULatinaLayOut(600, 600, 4);
+        JFrame tmpFrame = new JFrame("Actulizacion de empleado");
+        tmpFrame.setLayout(ultmp.getLayOut());
+        tmpFrame.setSize(ultmp.setComponentDimension());
+        Object[][] obj0
+                = {
+                    {lbl_Search, 140, 30, "ID Empleado:"},
+                    {txt_search, 140, 30}
+                };
+        ultmp.setRow(obj0);
+        btn_revisar.setText("Revisar");
+        btn_revisar.setBounds(ultmp.getRectangle(220, 30));
+
+        Object[][] obj1
+                = {
+                    {lbl_Codigonombre, 140, 30, "ID Empleado: "},
+                    {lbl_Codigo, 140, 30}
+                };
+        ultmp.setRow(obj1);
+        Object[][] obj2
+                = {
+                    {lbl_Nombrenombre, 140, 30, "Nombre del Empleado: "},
+                    {lbl_Nombre, 140, 30}
+                };
+        ultmp.setRow(obj2);
+        Object[][] obj3
+                = {
+                    {lbl_Fechanombre, 140, 30, "Fecha de ingreso: "},
+                    {lbl_Fecha, 140, 30}
+                };
+        ultmp.setRow(obj3);
+        Object[][] obj4
+                = {
+                    {lbl_Departamentonombre, 140, 30, "Departamento: "},
+                    {lbl_Departamento, 140, 30}
+                };
+        ultmp.setRow(obj4);
+        Object[][] obj5
+                = {
+                    {lbl_Edadnombre, 140, 30, "Edad: "},
+                    {lbl_Edad, 140, 30}
+                };
+        ultmp.setRow(obj5);
+        Object[][] obj6
+                = {
+                    {lbl_Amonestacionesnombre, 140, 30, "Amonestaciones: "},
+                    {lbl_Amonestaciones, 140, 30}
+                };
+        ultmp.setRow(obj6);
+        Object[][] obj7
+                = {
+                    {lbl_Despidonombre, 140, 30, "Posible despido: "},
+                    {lbl_Despido, 140, 30}
+                };
+        ultmp.setRow(obj7);
+
+        btn_revisar.addActionListener((al) -> {
+
+            ArrayList<Object> objs = new ArrayList<>();
+            objs.addAll(Arrays.asList(txt_search.getText()));
+            try {
+                ResultSet rs = sql.SELECT("Select `Codigo_de_empleado`, `Nombre_Empleado`,"
+                        + "`Fecha_Ingreso`,"
+                        + "`Departamento_Empleado`,`Numero_Amonestaciones`,"
+                        + "`Edad_Empleado`"
+                        + "From `Personal_Laboratorio_Mario` WHERE `Codigo_de_empleado`=?", objs);
+                if (sql.Exists(rs)) {
+                    try {
+                        while (rs.next()) {
+                            lbl_Codigo.setText(rs.getObject("Codigo_de_empleado").toString());
+                            lbl_Nombre.setText(rs.getObject("Nombre_Empleado").toString());
+                            lbl_Fecha.setText(rs.getObject("Fecha_Ingreso").toString());
+                            lbl_Departamento.setText(rs.getObject("Departamento_Empleado").toString());
+                            lbl_Amonestaciones.setText(rs.getObject("Numero_Amonestaciones").toString());
+                            lbl_Edad.setText(rs.getObject("Edad_Empleado").toString());
+                            if ((Integer) rs.getObject("Numero_Amonestaciones") > 3) {
+                                lbl_Despido.setText("SI");
+                            } else {
+                                lbl_Despido.setText("NO");
+                            }
+                    
+                        }
+                    } catch (SQLException ex) {
+                        System.out.println("No existe el empleado");
+                    }
+                }
+            } catch (Exception ex) {
+                System.out.println("Error" + ex);
+            }
+
+        }
+        );
+        tmpFrame.add(lbl_Search);
+
+        tmpFrame.add(txt_search);
+
+        tmpFrame.add(lbl_Codigonombre);
+
+        tmpFrame.add(lbl_Codigo);
+
+        tmpFrame.add(lbl_Nombrenombre);
+
+        tmpFrame.add(lbl_Nombre);
+
+        tmpFrame.add(lbl_Fechanombre);
+
+        tmpFrame.add(lbl_Fecha);
+
+        tmpFrame.add(lbl_Departamentonombre);
+
+        tmpFrame.add(lbl_Departamento);
+
+        tmpFrame.add(lbl_Edadnombre);
+
+        tmpFrame.add(lbl_Edad);
+
+        tmpFrame.add(lbl_Amonestacionesnombre);
+
+        tmpFrame.add(lbl_Amonestaciones);
+
+        tmpFrame.add(lbl_Despidonombre);
+
+        tmpFrame.add(lbl_Despido);
+
+        tmpFrame.add(btn_revisar);
+
+        tmpFrame.setVisible(
+                true);
+
     }
 
 }
