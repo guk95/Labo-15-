@@ -103,7 +103,7 @@ public class LabTareaJavaSQL extends JFrame {
         ResultSet rs = sql.SELECT(""
                 + "SELECT `idusuario`, `Nombre`, `Password`,`tipoLogin` "
                 + "FROM `Mario_Login` "
-                + "WHERE `Nombre`=? AND `Password`=? AND (`tipoLogin`= \"Admin\" Or`tipoLogin`= \"DBA\") ",
+                + "WHERE `Nombre`=? AND `Password`=? AND ((`tipoLogin`= \"Admin\" Or`tipoLogin`= \"DBA\")or`Lock`=True) ",
                 arr);
 
         if (!sql.Exists(rs)) {

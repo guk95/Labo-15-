@@ -293,6 +293,7 @@ public class Dashboard extends JFrame {
     }
 
     public void btn_RevisarEmpleado() {
+        UsuarioLogueado current = new UsuarioLogueado();
         JLabel lbl_Search = new JLabel();
         JTextField txt_search = new JTextField();
         JLabel lbl_Codigonombre = new JLabel();
@@ -310,6 +311,19 @@ public class Dashboard extends JFrame {
         JLabel lbl_Despidonombre = new JLabel();
         JLabel lbl_Despido = new JLabel();
         JButton btn_revisar = new JButton();
+        JLabel lbl_espacio = new JLabel();
+        JLabel lbl_Autorizar = new JLabel();
+        JTextField txt_autorizar = new JTextField();
+        JButton btn_autorizar = new JButton();
+        if (current.getCargo().compareTo("DBA") == 0 || current.getCargo().compareTo("Admin") == 0) {
+            txt_autorizar.setVisible(true);
+            lbl_Autorizar.setVisible(true);
+            btn_autorizar.setVisible(true);
+        } else {
+            txt_autorizar.setVisible(false);
+            lbl_Autorizar.setVisible(false);
+            btn_autorizar.setVisible(false);
+        }
 
         ultmp = new ULatinaLayOut(600, 600, 4);
         JFrame tmpFrame = new JFrame("Actulizacion de empleado");
@@ -366,7 +380,28 @@ public class Dashboard extends JFrame {
                     {lbl_Despido, 140, 30}
                 };
         ultmp.setRow(obj7);
+        Object[][] obj8
+                = {
+                    {lbl_Autorizar, 140, 30, "Autorizar a: "},
+                    {txt_autorizar, 140, 30}
+                };
+        ultmp.setRow(obj8);
+        btn_autorizar.setText("Autorizar");
+        btn_autorizar.setBounds(ultmp.getRectangle(220, 30));
 
+        btn_autorizar.addActionListener((al) -> {
+            ArrayList<Object> autorizar = new ArrayList<>();
+            autorizar.addAll(Arrays.asList(txt_autorizar.getText()));
+
+            boolean result = sql.exec("Update `Mario_Login` SET `Lock`=1 WHERE `idusuario`=?", autorizar);
+
+            if (result) {
+                JOptionPane.showMessageDialog(null, "El usuario ya puede loguear");
+            } else {
+                JOptionPane.showMessageDialog(null, "Error contacte al DBA");
+            }
+
+        });
         btn_revisar.addActionListener((al) -> {
 
             ArrayList<Object> objs = new ArrayList<>();
@@ -391,7 +426,7 @@ public class Dashboard extends JFrame {
                             } else {
                                 lbl_Despido.setText("NO");
                             }
-                    
+
                         }
                     } catch (SQLException ex) {
                         System.out.println("No existe el empleado");
@@ -436,6 +471,9 @@ public class Dashboard extends JFrame {
         tmpFrame.add(lbl_Despido);
 
         tmpFrame.add(btn_revisar);
+        tmpFrame.add(lbl_Autorizar);
+        tmpFrame.add(txt_autorizar);
+        tmpFrame.add(btn_autorizar);
 
         tmpFrame.setVisible(
                 true);
