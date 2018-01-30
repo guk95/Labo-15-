@@ -38,11 +38,20 @@ public class Dashboard extends JFrame {
     private final SQL sql;
     private final funciones FNC;
     UsuarioLogueado current = new UsuarioLogueado();
+    JPanel GenericPanel = new JPanel();
+    JPanel Menu = new JPanel();
+    ULatinaLayOut GenericnsPanel = new ULatinaLayOut(600, 600, 4);
 
     public Dashboard() {
         this.ul = new ULatinaLayOut(800, 600, 4);
         this.sql = new SQL();
         this.FNC = new funciones();
+        Object[][] obj1
+                = {
+                    {Menu, 160, 600, 4},
+                    {GenericPanel, 640, 600, 4}
+                };
+        ul.setRow(obj1);
 
         setTitle("Dashboard Module");
         setLayout(ul.getLayOut());
@@ -52,7 +61,6 @@ public class Dashboard extends JFrame {
     }
 
     private void initComponents() {
-        JPanel Menu = new JPanel();
 
         ULatinaLayOut nsPanel = new ULatinaLayOut(160, 600, 4);
         Menu.setLayout(nsPanel.getLayOut());
@@ -94,9 +102,20 @@ public class Dashboard extends JFrame {
         add(Menu);
         pack();
         setVisible(true);
+        add(GenericPanel);
+        pack();
+        setVisible(true);
+//            Object[][] obj1
+//                = {
+//                    {Menu, 160, 600,4},
+//                    {GenericPanel, 400, 600,4}
+//                };
+//       nsPanel.setRow(obj1);
+
     }
 
     public void btnUsuarios_mouseClicked() {
+        GenericPanel.removeAll();
         ArrayList<String> cols = new ArrayList<>(Arrays.asList("idusuario", "Nombre", "Password"));
         ultmp = new ULatinaLayOut(300, 300, 4);
 
@@ -129,7 +148,8 @@ public class Dashboard extends JFrame {
     }
 
     public void btn_update_mouseClicked() throws ParseException {
-
+        GenericPanel.removeAll();
+             super.paintComponents(getGraphics());
         JLabel lbl_id_actual = new JLabel();
         JTextField txt_id_actual = new JTextField();
         JLabel lbl_cambiar = new JLabel();
@@ -157,52 +177,50 @@ public class Dashboard extends JFrame {
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
+        GenericPanel.setLayout(GenericnsPanel.getLayOut());
+        GenericPanel.setSize(GenericnsPanel.setComponentDimension());
 
-        ultmp = new ULatinaLayOut(600, 600, 4);
-        JFrame tmpFrame = new JFrame("Actulizacion de empleado");
-        tmpFrame.setLayout(ultmp.getLayOut());
-        tmpFrame.setSize(ultmp.setComponentDimension());
         Object[][] obj0
                 = {
                     {lbl_id_actual, 140, 30, "ID Empleado a cambiar"},
                     {txt_id_actual, 140, 30}
                 };
-        ultmp.setRow(obj0);
+        GenericnsPanel.setRow(obj0);
         Object[][] obj
                 = {
                     {lbl_cambiar, 140, 30, "Codigo Empleado"},
                     {txt_cambiar, 140, 30}
                 };
-        ultmp.setRow(obj);
+        GenericnsPanel.setRow(obj);
 
         Object[][] obj1
                 = {
                     {lbl_nombre, 140, 30, "Nombre Empleado"},
                     {txt_nombrenuevo, 140, 30}
                 };
-        ultmp.setRow(obj1);
+        GenericnsPanel.setRow(obj1);
         Object[][] obj2
                 = {
                     {lbl_edad, 140, 30, "Edad Empleado"},
                     {txt_edad, 140, 30}
                 };
-        ultmp.setRow(obj2);
+        GenericnsPanel.setRow(obj2);
         Object[][] obj3
                 = {
                     {jbox_Departamento, 140, 30, "Departamento"},};
-        ultmp.setRow(obj3);
+        GenericnsPanel.setRow(obj3);
         Object[][] obj4
                 = {
                     {lbl_fecha, 140, 30, "Fecha de ingreso "},
                     {txt_fecha, 140, 30}
                 };
-        ultmp.setRow(obj4);
+        GenericnsPanel.setRow(obj4);
         Object[][] obj5
                 = {
                     {lbl_amonestaciones, 140, 30, "Amonestaciones"},
                     {txt_amonestaciones, 140, 30}
                 };
-        ultmp.setRow(obj5);
+        GenericnsPanel.setRow(obj5);
         ArrayList<Object> generic = new ArrayList();
         ResultSet rs = sql.SELECT("Select `Departamentos` from `Departamentos_Mario` ", generic);
         try {
@@ -230,7 +248,7 @@ public class Dashboard extends JFrame {
 //        }
 
         btn_updateSQL.setText("Actualizar Usuario");
-        btn_updateSQL.setBounds(ultmp.getRectangle(220, 30));
+        btn_updateSQL.setBounds(GenericnsPanel.getRectangle(220, 30));
         btn_updateSQL.addActionListener((a) -> {
 
             if (current.getCargo().compareTo("DBA") == 0) {
@@ -274,25 +292,27 @@ public class Dashboard extends JFrame {
             }
 
         });
-        tmpFrame.add(lbl_cambiar);
-        tmpFrame.add(txt_cambiar);
-        tmpFrame.add(lbl_id_actual);
-        tmpFrame.add(txt_id_actual);
-        tmpFrame.add(lbl_nombre);
-        tmpFrame.add(txt_nombrenuevo);
-        tmpFrame.add(lbl_edad);
-        tmpFrame.add(txt_edad);
-        tmpFrame.add(jbox_Departamento);
-        tmpFrame.add(btn_updateSQL);
-        tmpFrame.add(lbl_fecha);
-        tmpFrame.add(txt_fecha);
-        tmpFrame.add(lbl_amonestaciones);
-        tmpFrame.add(txt_amonestaciones);
+        GenericPanel.add(lbl_cambiar);
+        GenericPanel.add(txt_cambiar);
+        GenericPanel.add(lbl_id_actual);
+        GenericPanel.add(txt_id_actual);
+        GenericPanel.add(lbl_nombre);
+        GenericPanel.add(txt_nombrenuevo);
+        GenericPanel.add(lbl_edad);
+        GenericPanel.add(txt_edad);
+        GenericPanel.add(jbox_Departamento);
+        GenericPanel.add(btn_updateSQL);
+        GenericPanel.add(lbl_fecha);
+        GenericPanel.add(txt_fecha);
+        GenericPanel.add(lbl_amonestaciones);
+        GenericPanel.add(txt_amonestaciones);
 
-        tmpFrame.setVisible(true);
     }
 
     public void btn_RevisarEmpleado() {
+     
+        super.paintComponents(getGraphics());
+     
         UsuarioLogueado current = new UsuarioLogueado();
         JLabel lbl_Search = new JLabel();
         JTextField txt_search = new JTextField();
@@ -325,69 +345,68 @@ public class Dashboard extends JFrame {
             btn_autorizar.setVisible(false);
         }
 
-        ultmp = new ULatinaLayOut(600, 600, 4);
-        JFrame tmpFrame = new JFrame("Actulizacion de empleado");
-        tmpFrame.setLayout(ultmp.getLayOut());
-        tmpFrame.setSize(ultmp.setComponentDimension());
+        GenericPanel.setLayout(GenericnsPanel.getLayOut());
+        GenericPanel.setSize(GenericnsPanel.setComponentDimension());
+
         Object[][] obj0
                 = {
                     {lbl_Search, 140, 30, "ID Empleado:"},
                     {txt_search, 140, 30}
                 };
-        ultmp.setRow(obj0);
+        GenericnsPanel.setRow(obj0);
         btn_revisar.setText("Revisar");
-        btn_revisar.setBounds(ultmp.getRectangle(220, 30));
+        btn_revisar.setBounds(GenericnsPanel.getRectangle(220, 30));
 
         Object[][] obj1
                 = {
                     {lbl_Codigonombre, 140, 30, "ID Empleado: "},
                     {lbl_Codigo, 140, 30}
                 };
-        ultmp.setRow(obj1);
+        GenericnsPanel.setRow(obj1);
         Object[][] obj2
                 = {
                     {lbl_Nombrenombre, 140, 30, "Nombre del Empleado: "},
                     {lbl_Nombre, 140, 30}
                 };
-        ultmp.setRow(obj2);
+        GenericnsPanel.setRow(obj2);
         Object[][] obj3
                 = {
                     {lbl_Fechanombre, 140, 30, "Fecha de ingreso: "},
                     {lbl_Fecha, 140, 30}
                 };
-        ultmp.setRow(obj3);
+        GenericnsPanel.setRow(obj3);
         Object[][] obj4
                 = {
                     {lbl_Departamentonombre, 140, 30, "Departamento: "},
                     {lbl_Departamento, 140, 30}
                 };
-        ultmp.setRow(obj4);
+        GenericnsPanel.setRow(obj4);
         Object[][] obj5
                 = {
                     {lbl_Edadnombre, 140, 30, "Edad: "},
                     {lbl_Edad, 140, 30}
                 };
-        ultmp.setRow(obj5);
+        GenericnsPanel.setRow(obj5);
         Object[][] obj6
                 = {
                     {lbl_Amonestacionesnombre, 140, 30, "Amonestaciones: "},
                     {lbl_Amonestaciones, 140, 30}
                 };
-        ultmp.setRow(obj6);
+        GenericnsPanel.setRow(obj6);
         Object[][] obj7
                 = {
                     {lbl_Despidonombre, 140, 30, "Posible despido: "},
                     {lbl_Despido, 140, 30}
                 };
-        ultmp.setRow(obj7);
+        GenericnsPanel.setRow(obj7);
         Object[][] obj8
                 = {
                     {lbl_Autorizar, 140, 30, "Autorizar a: "},
                     {txt_autorizar, 140, 30}
                 };
-        ultmp.setRow(obj8);
+        GenericnsPanel.setRow(obj8);
         btn_autorizar.setText("Autorizar");
-        btn_autorizar.setBounds(ultmp.getRectangle(220, 30));
+        btn_autorizar.setBounds(GenericnsPanel.getRectangle(220, 30));
 
         btn_autorizar.addActionListener((al) -> {
             ArrayList<Object> autorizar = new ArrayList<>();
@@ -438,45 +457,42 @@ public class Dashboard extends JFrame {
 
         }
         );
-        tmpFrame.add(lbl_Search);
+        GenericPanel.add(lbl_Search);
 
-        tmpFrame.add(txt_search);
+        GenericPanel.add(txt_search);
 
-        tmpFrame.add(lbl_Codigonombre);
+        GenericPanel.add(lbl_Codigonombre);
 
-        tmpFrame.add(lbl_Codigo);
+        GenericPanel.add(lbl_Codigo);
 
-        tmpFrame.add(lbl_Nombrenombre);
+        GenericPanel.add(lbl_Nombrenombre);
 
-        tmpFrame.add(lbl_Nombre);
+        GenericPanel.add(lbl_Nombre);
 
-        tmpFrame.add(lbl_Fechanombre);
+        GenericPanel.add(lbl_Fechanombre);
 
-        tmpFrame.add(lbl_Fecha);
+        GenericPanel.add(lbl_Fecha);
 
-        tmpFrame.add(lbl_Departamentonombre);
+        GenericPanel.add(lbl_Departamentonombre);
 
-        tmpFrame.add(lbl_Departamento);
+        GenericPanel.add(lbl_Departamento);
 
-        tmpFrame.add(lbl_Edadnombre);
+        GenericPanel.add(lbl_Edadnombre);
 
-        tmpFrame.add(lbl_Edad);
+        GenericPanel.add(lbl_Edad);
 
-        tmpFrame.add(lbl_Amonestacionesnombre);
+        GenericPanel.add(lbl_Amonestacionesnombre);
 
-        tmpFrame.add(lbl_Amonestaciones);
+        GenericPanel.add(lbl_Amonestaciones);
 
-        tmpFrame.add(lbl_Despidonombre);
+        GenericPanel.add(lbl_Despidonombre);
 
-        tmpFrame.add(lbl_Despido);
+        GenericPanel.add(lbl_Despido);
 
-        tmpFrame.add(btn_revisar);
-        tmpFrame.add(lbl_Autorizar);
-        tmpFrame.add(txt_autorizar);
-        tmpFrame.add(btn_autorizar);
-
-        tmpFrame.setVisible(
-                true);
+        GenericPanel.add(btn_revisar);
+        GenericPanel.add(lbl_Autorizar);
+        GenericPanel.add(txt_autorizar);
+        GenericPanel.add(btn_autorizar);
 
     }
 
