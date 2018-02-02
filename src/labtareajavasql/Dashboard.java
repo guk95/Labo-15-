@@ -8,6 +8,9 @@ package labtareajavasql;
 import labtareajavasql.funciones;
 import labtareajavasql.SQL;
 import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -17,6 +20,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
@@ -27,6 +31,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SpringLayout;
+import javax.swing.plaf.basic.BasicSplitPaneUI;
 
 /**
  *
@@ -115,16 +121,16 @@ public class Dashboard extends JFrame {
     }
 
     public void btnUsuarios_mouseClicked() {
-        GenericPanel.removeAll();
-        ArrayList<String> cols = new ArrayList<>(Arrays.asList("idusuario", "Nombre", "Password"));
-        ultmp = new ULatinaLayOut(300, 300, 4);
 
-        JFrame nn = new JFrame();
-        nn.setSize(ultmp.setComponentDimension());
+        GenericPanel.removeAll();
+        GenericPanel.updateUI();
+        super.paintAll(getGraphics());
+        ULatinaLayOut GenericnsPanel = new ULatinaLayOut(600, 600, 4);
+        ArrayList<String> cols = new ArrayList<>(Arrays.asList("idusuario", "Nombre", "Password"));
+        ;
+        GenericPanel.setSize(GenericnsPanel.setComponentDimension());
         JTable table = FNC.createTable(cols);
         JScrollPane scrollPane = new JScrollPane(table);
-        nn.add(scrollPane);
-        nn.setVisible(true);
 
         ResultSet rs = sql.SELECT(""
                 + "SELECT `idusuario`, `Nombre`, `Password` "
@@ -144,12 +150,17 @@ public class Dashboard extends JFrame {
             } catch (SQLException ex) {
                 System.out.println("no object fetch'd");
             }
+
         }
+        GenericPanel.add(scrollPane);
     }
 
     public void btn_update_mouseClicked() throws ParseException {
         GenericPanel.removeAll();
-             super.paintComponents(getGraphics());
+        GenericPanel.updateUI();
+        super.paintAll(getGraphics());
+        ULatinaLayOut GenericnsPanel = new ULatinaLayOut(600, 600, 4);
+
         JLabel lbl_id_actual = new JLabel();
         JTextField txt_id_actual = new JTextField();
         JLabel lbl_cambiar = new JLabel();
@@ -173,7 +184,7 @@ public class Dashboard extends JFrame {
         try {
             FormatoFecha fecha = new FormatoFecha();
             fecha.stringToValue(txt_fecha.getText());
-            txt_fecha.setValue(new Date());
+
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
@@ -236,17 +247,46 @@ public class Dashboard extends JFrame {
             System.out.println("Error: " + e);
         }
         generic.clear();
-//         ResultSet sr = sql.SELECT("Select `Codigo de empleado` from `Persona_Laboratorio_Mario`", generic);
-//        try {
-//            while (rs.next()) {
-//                generic.add(rs.getObject("Departamentos"));
-//
-//            }
-//          txt_cambiar.setText(generic.toString());
-//        } catch (Exception e) {
-//            System.out.println("Error: " + e);
-//        }
+        txt_id_actual.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                ArrayList<Object> objs = new ArrayList<>();
+                objs.addAll(Arrays.asList(txt_id_actual.getText()));
+                try {
+                    ResultSet rs = sql.SELECT("Select `Codigo_de_empleado`, `Nombre_Empleado`,"
+                            + "`Fecha_Ingreso`,"
+                            + "`Departamento_Empleado`,`Numero_Amonestaciones`,"
+                            + "`Edad_Empleado`"
+                            + "From `Personal_Laboratorio_Mario` WHERE `Codigo_de_empleado`=?", objs);
+                    if (sql.Exists(rs)) {
+                        try {
+                            while (rs.next()) {
+                                txt_cambiar.setText(rs.getObject("Codigo_de_empleado").toString());
+                                txt_nombrenuevo.setText(rs.getObject("Nombre_Empleado").toString());
+                                txt_fecha.setText(rs.getObject("Fecha_Ingreso").toString());
+                                txt_amonestaciones.setText(rs.getObject("Numero_Amonestaciones").toString());
+                                txt_edad.setText(rs.getObject("Edad_Empleado").toString());
+
+                            }
+                        } catch (SQLException ex) {
+                            System.out.println("No existe el empleado");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "EL usuario no existe");
+                        txt_cambiar.setText("");
+                        txt_nombrenuevo.setText("");
+                        txt_amonestaciones.setText("");
+                        txt_edad.setText("");
+
+                    }
+                } catch (Exception ex) {
+                    System.out.println("Error" + ex);
+
+                }
+
+            }
+        });
         btn_updateSQL.setText("Actualizar Usuario");
         btn_updateSQL.setBounds(GenericnsPanel.getRectangle(220, 30));
         btn_updateSQL.addActionListener((a) -> {
@@ -310,9 +350,11 @@ public class Dashboard extends JFrame {
     }
 
     public void btn_RevisarEmpleado() {
-     
-        super.paintComponents(getGraphics());
-     
+        GenericPanel.removeAll();
+        GenericPanel.updateUI();
+        super.paintAll(getGraphics());
+        ULatinaLayOut GenericnsPanel = new ULatinaLayOut(600, 600, 4);
+
         UsuarioLogueado current = new UsuarioLogueado();
         JLabel lbl_Search = new JLabel();
         JTextField txt_search = new JTextField();
@@ -344,7 +386,101 @@ public class Dashboard extends JFrame {
             lbl_Autorizar.setVisible(false);
             btn_autorizar.setVisible(false);
         }
+        txt_search.addActionListener(new ActionListener() {
 
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                ArrayList<Object> objs = new ArrayList<>();
+                objs.addAll(Arrays.asList(txt_search.getText()));
+                try {
+                    ResultSet rs = sql.SELECT("Select `Codigo_de_empleado`, `Nombre_Empleado`,"
+                            + "`Fecha_Ingreso`,"
+                            + "`Departamento_Empleado`,`Numero_Amonestaciones`,"
+                            + "`Edad_Empleado`"
+                            + "From `Personal_Laboratorio_Mario` WHERE `Codigo_de_empleado`=?", objs);
+                    if (sql.Exists(rs)) {
+                        try {
+                            while (rs.next()) {
+                                lbl_Codigo.setText(rs.getObject("Codigo_de_empleado").toString());
+                                lbl_Nombre.setText(rs.getObject("Nombre_Empleado").toString());
+                                lbl_Fecha.setText(rs.getObject("Fecha_Ingreso").toString());
+                                lbl_Departamento.setText(rs.getObject("Departamento_Empleado").toString());
+                                lbl_Amonestaciones.setText(rs.getObject("Numero_Amonestaciones").toString());
+                                lbl_Edad.setText(rs.getObject("Edad_Empleado").toString());
+                                if ((Integer) rs.getObject("Numero_Amonestaciones") > 3) {
+                                    lbl_Despido.setText("SI");
+                                } else {
+                                    lbl_Despido.setText("NO");
+                                }
+
+                            }
+                        } catch (SQLException ex) {
+                            System.out.println("No existe el empleado");
+                        }
+                    } else {
+                        JOptionPane.showMessageDialog(null, "EL usuario no existe");
+                        lbl_Codigo.setText("");
+                        lbl_Nombre.setText("");
+                        lbl_Fecha.setText("");
+                        lbl_Departamento.setText("");
+                        lbl_Amonestaciones.setText("");
+                        lbl_Edad.setText("");
+                        lbl_Despido.setText("");
+
+                    }
+                } catch (Exception ex) {
+                    System.out.println("Error" + ex);
+
+                }
+
+            }
+        });
+//        txt_search.addActionListener((al) -> {
+//
+//            ArrayList<Object> objs = new ArrayList<>();
+//            objs.addAll(Arrays.asList(txt_search.getText()));
+//            try {
+//                ResultSet rs = sql.SELECT("Select `Codigo_de_empleado`, `Nombre_Empleado`,"
+//                        + "`Fecha_Ingreso`,"
+//                        + "`Departamento_Empleado`,`Numero_Amonestaciones`,"
+//                        + "`Edad_Empleado`"
+//                        + "From `Personal_Laboratorio_Mario` WHERE `Codigo_de_empleado`=?", objs);
+//                if (sql.Exists(rs)) {
+//                    try {
+//                        while (rs.next()) {
+//                            lbl_Codigo.setText(rs.getObject("Codigo_de_empleado").toString());
+//                            lbl_Nombre.setText(rs.getObject("Nombre_Empleado").toString());
+//                            lbl_Fecha.setText(rs.getObject("Fecha_Ingreso").toString());
+//                            lbl_Departamento.setText(rs.getObject("Departamento_Empleado").toString());
+//                            lbl_Amonestaciones.setText(rs.getObject("Numero_Amonestaciones").toString());
+//                            lbl_Edad.setText(rs.getObject("Edad_Empleado").toString());
+//                            if ((Integer) rs.getObject("Numero_Amonestaciones") > 3) {
+//                                lbl_Despido.setText("SI");
+//                            } else {
+//                                lbl_Despido.setText("NO");
+//                            }
+//
+//                        }
+//                    } catch (SQLException ex) {
+//                        System.out.println("No existe el empleado");
+//                    }
+//                } else {
+//                    JOptionPane.showMessageDialog(null, "EL usuario no existe");
+//                    lbl_Codigo.setText("");
+//                    lbl_Nombre.setText("");
+//                    lbl_Fecha.setText("");
+//                    lbl_Departamento.setText("");
+//                    lbl_Amonestaciones.setText("");
+//                    lbl_Edad.setText("");
+//                    lbl_Despido.setText("");
+//
+//                }
+//            } catch (Exception ex) {
+//                System.out.println("Error" + ex);
+//
+//            }
+
+//        });
         GenericPanel.setLayout(GenericnsPanel.getLayOut());
         GenericPanel.setSize(GenericnsPanel.setComponentDimension());
 
@@ -450,6 +586,15 @@ public class Dashboard extends JFrame {
                     } catch (SQLException ex) {
                         System.out.println("No existe el empleado");
                     }
+                } else {
+                    JOptionPane.showMessageDialog(null, "EL usuario no existe");
+                    lbl_Codigo.setText("");
+                    lbl_Nombre.setText("");
+                    lbl_Fecha.setText("");
+                    lbl_Departamento.setText("");
+                    lbl_Amonestaciones.setText("");
+                    lbl_Edad.setText("");
+                    lbl_Despido.setText("");
                 }
             } catch (Exception ex) {
                 System.out.println("Error" + ex);
