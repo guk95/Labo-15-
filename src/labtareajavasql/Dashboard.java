@@ -183,11 +183,12 @@ public class Dashboard extends JFrame {
         txt_fecha.setFocusLostBehavior(WIDTH);
         try {
             FormatoFecha fecha = new FormatoFecha();
-            fecha.stringToValue(txt_fecha.getText());
+          
 
         } catch (Exception e) {
             System.out.println("Error: " + e);
         }
+        btn_updateSQL.setVisible(false);
         GenericPanel.setLayout(GenericnsPanel.getLayOut());
         GenericPanel.setSize(GenericnsPanel.setComponentDimension());
 
@@ -248,7 +249,6 @@ public class Dashboard extends JFrame {
         }
         generic.clear();
         txt_id_actual.addActionListener(new ActionListener() {
-
             @Override
             public void actionPerformed(ActionEvent ae) {
                 ArrayList<Object> objs = new ArrayList<>();
@@ -272,12 +272,14 @@ public class Dashboard extends JFrame {
                         } catch (SQLException ex) {
                             System.out.println("No existe el empleado");
                         }
+                            btn_updateSQL.setVisible(true);
                     } else {
                         JOptionPane.showMessageDialog(null, "EL usuario no existe");
                         txt_cambiar.setText("");
                         txt_nombrenuevo.setText("");
                         txt_amonestaciones.setText("");
                         txt_edad.setText("");
+                          btn_updateSQL.setVisible(false);
 
                     }
                 } catch (Exception ex) {
